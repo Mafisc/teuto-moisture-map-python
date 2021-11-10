@@ -7,7 +7,7 @@ This project contains a small python app that acts as the receiving end for a we
 ***
 
 ## Supported sensors
-As of now the app has only been tested with the Dragino Moisture Sensor (<http://www.dragino.com/>). Exrtracting the readings from the payload might not work if a different sensor is used.
+As of now the app has only been tested with the Dragino Moisture Sensor (<http://www.dragino.com/>). Extracting the readings from the payload might not work if a different sensor is used.
 
 ## Prerequisites
 1. The sensor must be registered in TTN (<https://www.thethingsnetwork.org/>).
