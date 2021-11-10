@@ -24,7 +24,7 @@ To run the app without docker:
 
     python app.py
 
-Building the docker image:
+Building and running the docker image:
 
     docker build . -t your/tag
     docker run -p 0.0.0.0:5000:5000 your/tag
