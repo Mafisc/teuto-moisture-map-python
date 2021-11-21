@@ -27,6 +27,6 @@ To run the app without docker:
 Building and running the docker image:
 
     docker build . -t your/tag
-    docker run -p 0.0.0.0:5000:5000 your/tag
+    docker run --env TMM-BUCKET=tmm-bucket --env TMM_API_KEY=foo -p 0.0.0.0:5000:5000 your/tag
 
 Make sure that port 5000 is reachable from the outside world.
