@@ -30,7 +30,7 @@ This method accepts JSON payloads from TTN, unmarshals the required information 
 """
 @app.post("/incomingMessages")
 def add_message():
-    request_apikey = request.headers.get(key="X-Downlink-Apikey", default=None)
+    request_apikey = request.headers.get(key="webhook-api-key", default=None)
 
     if(apikey != None & request_apikey == apikey):
 
