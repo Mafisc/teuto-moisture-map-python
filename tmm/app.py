@@ -32,7 +32,6 @@ def add_message():
 
         if request.is_json:
             message = request.get_json()
-            print(message)
             writeJsonToDb(message)
             return message, 201
         return {"error": "Request must be JSON"}, 415
