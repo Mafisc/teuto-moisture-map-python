@@ -2,41 +2,40 @@ from datetime import datetime
 import json
 from influxdb_client import InfluxDBClient
 import sys
-import calendar
 
-def export_to_json(path_to_config="../config.ini", query_type='value'):
+def export_to_json(path_to_config="../config.ini", query_type='value', range="-24h", measurement="moisture", fieldname="percent"):
 
     value_query = 'from(bucket: "tmm-bucket") \
-    |> range(start: -24h) \
+    |> range(start: ' + range +') \
     |> filter(fn: (r) => \
-        r._measurement == "moisture" and \
-        r._field == "percent"'
+        r._measurement == "' + measurement +'" and \
+        r._field == "' + fieldname +'"'
 
     map_query = 'lat = from(bucket: "tmm-bucket") \
-    |> range(start: -24h) \
-    |> filter(fn: (r) => r["_measurement"] == "moisture") \
+    |> range(start: ' + range +') \
+    |> filter(fn: (r) => r["_measurement"] == "' + measurement +'") \
     |> filter(fn: (r) => r["_field"] == "latitude") \
     |> aggregateWindow(every: 1d , fn: last) \
     \
     long = from(bucket: "tmm-bucket") \
-    |> range(start: -24h) \
-    |> filter(fn: (r) => r["_measurement"] == "moisture") \
+    |> range(start: ' + range +') \
+    |> filter(fn: (r) => r["_measurement"] == "' + measurement +'") \
     |> filter(fn: (r) => r["_field"] == "longitude") \
     |> aggregateWindow(every: 1d , fn: last) \
     \
-    moisture = from(bucket: "tmm-bucket") \
-    |> range(start: -24h) \
-    |> filter(fn: (r) => r["_measurement"] == "moisture") \
-    |> filter(fn: (r) => r["_field"] == "percent") \
-    |> aggregateWindow(every: 1d , fn: last) \
+    measurement = from(bucket: "tmm-bucket") \
+    |> range(start: ' + range +') \
+    |> filter(fn: (r) => r["_measurement"] == "' + measurement +'") \
+    |> filter(fn: (r) => r["_field"] == "' + fieldname +'") \
+    |> aggregateWindow(every: 1d , fn: mean) \
     \
     alt = from(bucket: "tmm-bucket") \
-    |> range(start: -24h) \
-    |> filter(fn: (r) => r["_measurement"] == "moisture") \
+    |> range(start: ' + range +') \
+    |> filter(fn: (r) => r["_measurement"] == "' + measurement +'") \
     |> filter(fn: (r) => r["_field"] == "altitude") \
     |> aggregateWindow(every: 1d , fn: last) \
     \
-    union(tables: [alt, lat, long, moisture]) \
+    union(tables: [alt, lat, long, measurement]) \
     |> group(columns: ["device"], mode: "by") \
     |> pivot(rowKey: ["_time"], columnKey: ["_field"],  valueColumn: "_value") \
     |> group()'
