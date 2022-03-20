@@ -95,7 +95,7 @@ def writeJsonToDb(json : dict):
     app.logger.info("Got values:\n Bat:" + str(data["battery"]) + ", Conductivity: " + str(data["conductivity"]) + ", Temperature: " + str(data["temperature"]) + ", Moisture: " + str(data["moisture"]) )
 
 
-    with InfluxDBClient.from_config_file(config_file="../config.ini") as client:
+    with InfluxDBClient.from_config_file(config_file="config.ini") as client:
         
         write_api = client.write_api(write_options=SYNCHRONOUS)
 

@@ -2,14 +2,20 @@ from datetime import datetime
 import json
 from influxdb_client import InfluxDBClient
 import sys
+import os
 
-def export_to_json(path_to_config="../config.ini", query_type='value', range="-24h", measurement="moisture", fieldname="percent"):
+query_type = os.environ.get('EXPORT_QUERY_TYPE') or 'map'
+range = os.environ.get('EXPORT_TIMERANGE') or "-24h"
+measurement = os.environ.get('EXPORT_MEASUREMENT') or "moisture"
+fieldname = os.environ.get('EXPORT_FIELDNAME') or "percent"
+
+def export_to_json(path_to_config="config.ini"):
 
     value_query = 'from(bucket: "tmm-bucket") \
-    |> range(start: ' + range +') \
+    |> range(start: ' + range + ') \
     |> filter(fn: (r) => \
         r._measurement == "' + measurement +'" and \
-        r._field == "' + fieldname +'"'
+        r._field == "' + fieldname +'")'
 
     map_query = 'lat = from(bucket: "tmm-bucket") \
     |> range(start: ' + range +') \
@@ -40,10 +46,8 @@ def export_to_json(path_to_config="../config.ini", query_type='value', range="-2
     |> pivot(rowKey: ["_time"], columnKey: ["_field"],  valueColumn: "_value") \
     |> group()'
 
-    query = value_query
-
-    if query_type == 'map':
-        query = map_query
+    # TODO: Implement processing of value query
+    query = map_query
 
     with InfluxDBClient.from_config_file(config_file=path_to_config) as client:
 
@@ -72,6 +76,5 @@ def export_to_json(path_to_config="../config.ini", query_type='value', range="-2
 
 args = sys.argv[1:]
 path = args[0]
-type = args[1]
 
-export_to_json(path_to_config=path, query_type=type)
+export_to_json(path_to_config=path)
