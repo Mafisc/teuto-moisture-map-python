@@ -53,7 +53,6 @@ def export_to_json(path_to_config="config.ini"):
 
         query_api = client.query_api()
         result = query_api.query(query=query)
-        print(result)
 
         valueArray = []
         for record in result[0].records:
@@ -63,7 +62,8 @@ def export_to_json(path_to_config="config.ini"):
             jsonRecord['percent'] = record.values['percent']
             jsonRecord['latitude'] = record.values['latitude']
             jsonRecord['longitude'] = record.values['longitude']
-            valueArray.append(jsonRecord)
+            if (record.values['percent'] != None):
+                valueArray.append(jsonRecord)
         
         jsonObj = {}
         jsonObj['timestamp'] = str(datetime.now())
