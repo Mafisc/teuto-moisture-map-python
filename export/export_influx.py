@@ -5,7 +5,7 @@ import sys
 import os
 
 query_type = os.environ.get('EXPORT_QUERY_TYPE') or 'map'
-range = os.environ.get('EXPORT_TIMERANGE') or "-24h"
+range = os.environ.get('EXPORT_TIMERANGE') or "-1d"
 measurement = os.environ.get('EXPORT_MEASUREMENT') or "moisture"
 fieldname = os.environ.get('EXPORT_FIELDNAME') or "percent"
 
@@ -22,24 +22,28 @@ def export_to_json(path_to_config="config.ini"):
     |> filter(fn: (r) => r["_measurement"] == "' + measurement +'") \
     |> filter(fn: (r) => r["_field"] == "latitude") \
     |> aggregateWindow(every: 1d , fn: last) \
+    |> last() \
     \
     long = from(bucket: "tmm-bucket") \
     |> range(start: ' + range +') \
     |> filter(fn: (r) => r["_measurement"] == "' + measurement +'") \
     |> filter(fn: (r) => r["_field"] == "longitude") \
     |> aggregateWindow(every: 1d , fn: last) \
+    |> last() \
     \
     measurement = from(bucket: "tmm-bucket") \
     |> range(start: ' + range +') \
     |> filter(fn: (r) => r["_measurement"] == "' + measurement +'") \
     |> filter(fn: (r) => r["_field"] == "' + fieldname +'") \
-    |> aggregateWindow(every: 1d , fn: mean) \
+    |> aggregateWindow(every: 1d , fn: last) \
+    |> last() \
     \
     alt = from(bucket: "tmm-bucket") \
     |> range(start: ' + range +') \
     |> filter(fn: (r) => r["_measurement"] == "' + measurement +'") \
     |> filter(fn: (r) => r["_field"] == "altitude") \
     |> aggregateWindow(every: 1d , fn: last) \
+    |> last() \
     \
     union(tables: [alt, lat, long, measurement]) \
     |> group(columns: ["device"], mode: "by") \
