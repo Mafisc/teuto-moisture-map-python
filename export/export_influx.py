@@ -87,12 +87,13 @@ def export_to_json(path_to_config="config.ini"):
                     jsonRecord['timestamp'] = str(record.get_time())
                     jsonRecord['deviceId'] = str(record.values['device'])
                     valuesArray.append(jsonRecord)
+            jsonObj['values'] = valuesArray
 
         else:
             print("unknown query type: "  + str(query_type))
 
         jsonObj['timestamp'] = str(datetime.now())
-        jsonObj['values'] = valuesArray
+        
 
         retval = json.dumps(jsonObj)
         print(retval)
