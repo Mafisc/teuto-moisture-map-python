@@ -2,3 +2,4 @@ config.ini
 payload.json
 .vscode/
 __pycache__/
+.pythonVirtualEnv/

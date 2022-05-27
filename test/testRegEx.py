@@ -1,6 +1,5 @@
 import unittest
 
-from context import tmm
 from tmm.payload.PayloadParser import PayloadParser
 
 """

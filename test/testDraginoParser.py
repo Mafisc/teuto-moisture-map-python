@@ -2,8 +2,8 @@ import unittest
 
 import json
 
-from context import tmm
 import tmm.payload.PayloadParserFactory as ppf
+from os.path import dirname, join
 
 class TestDraginoParser(unittest.TestCase):
 
@@ -14,8 +14,10 @@ class TestDraginoParser(unittest.TestCase):
     """
     def test_parse_payload(self):
         dragino_parser = ppf.get_parser_for_model(brand="dragino", model="lse01")
+        project_root_path = dirname(dirname(__file__)) 
+        filepath = f"{project_root_path}/test/dragino_ttn_payload.json"
         
-        with open('dragino_ttn_payload.json', 'r') as file:
+        with open(filepath, 'r') as file:
             payload = json.load(file)
             data = dragino_parser.parse_payload(payload)
 
